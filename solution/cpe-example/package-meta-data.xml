@@ -1,0 +1,16 @@
+<ncs-package xmlns="http://tail-f.com/ns/ncs-packages">
+  <name>cpe-example</name>
+  <package-version>1.0</package-version>
+  <description>Generated Python package</description>
+  <ncs-min-version>6.1</ncs-min-version>
+
+  <required-package>
+    <name>maagic-copy</name>
+  </required-package>
+  <component>
+    <name>main</name>
+    <application>
+      <python-class-name>cpe_example.main.Main</python-class-name>
+    </application>
+  </component>
+</ncs-package>

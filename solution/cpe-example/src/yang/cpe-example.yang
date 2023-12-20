@@ -1,0 +1,129 @@
+module cpe-example {
+
+  namespace "http://example.com/cpe-example";
+  prefix ce;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-common {
+    prefix tailf;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+  import device-automaton {
+    prefix devaut;
+  }
+  import device-automaton-groupings {
+    prefix devaut-groupings;
+  }
+
+  description
+    "Bla bla...";
+
+  revision 2016-01-01 {
+    description
+      "Initial revision.";
+  }
+
+  grouping base-config-grouping {
+    leaf hostname {
+      type string;
+      mandatory true;
+    }
+  }
+
+  container rfs {
+    list base-config {
+      ncs:servicepoint base-config-servicepoint;
+      uses ncs:service-data;
+
+      key device;
+      leaf device {
+        type leafref {
+          path "/ncs:devices/ncs:device/ncs:name";
+        }
+      }
+
+      uses base-config-grouping;
+    }
+  }
+
+  container nodes {
+    list cpe {
+      ncs:servicepoint cpe-servicepoint;
+      uses ncs:service-data;
+      uses ncs:nano-plan-data;
+
+      key name;
+
+      leaf name {
+        type string;
+      }
+
+      container device {
+        uses devaut-groupings:device-automaton-grouping;
+      }
+
+      container base-config {
+        uses base-config-grouping;
+      }
+    }
+  }
+
+  identity cpe {
+    base ncs:plan-component-type;
+  }
+
+  identity base-config-created {
+    base ncs:plan-state;
+  }
+
+  identity device-automaton-created {
+    base ncs:plan-state;
+  }
+
+  ncs:plan-outline cpe-plan {
+    ncs:self-as-service-status;
+
+    ncs:component-type "ncs:self" {
+      ncs:state "ncs:init";
+      ncs:state "ncs:ready";
+    }
+    ncs:component-type "ce:cpe" {
+      ncs:state "ncs:init";
+      ncs:state "ce:device-automaton-created" {
+        ncs:create {
+          ncs:nano-callback;
+        }
+      }
+      ncs:state "ce:base-config-created" {
+        ncs:create {
+          ncs:nano-callback;
+          ncs:pre-condition {
+            ncs:monitor "/ncs:devices/devaut:automaton[devaut:device=$DEVICE_NAME]/devaut:device-ready" {
+              ncs:trigger-expr "current() = 'true'";
+            }
+          }
+        }
+      }
+      ncs:state "ncs:ready";
+    }
+  }
+
+  ncs:service-behavior-tree cpe-servicepoint {
+    ncs:plan-outline-ref cpe-plan;
+    ncs:selector {
+      ncs:variable "DEVICE_NAME" {
+        ncs:value-expr "$SERVICE/name";
+      }
+      ncs:create-component "'self'" {
+        ncs:component-type-ref "ncs:self";
+      }
+      ncs:create-component "$DEVICE_NAME" {
+        ncs:component-type-ref "ce:cpe";
+      }
+    }
+  }
+}

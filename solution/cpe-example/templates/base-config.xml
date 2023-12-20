@@ -1,0 +1,10 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0" servicepoint="base-config-servicepoint">
+  <devices xmlns="http://tail-f.com/ns/ncs" tags="nocreate">
+    <device>
+      <name>{/device}</name>
+      <config tags="merge">
+        <hostname xmlns="urn:ios">{/hostname}</hostname>
+      </config>
+    </device>
+  </devices>
+</config-template>

@@ -1,0 +1,37 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0"
+                 xmlns:link="http://example.com/cpe-example"
+                 servicepoint="cpe-servicepoint"
+                 componenttype="ce:cpe"
+                 state="ce:base-config-created">
+  <!-- This state primarily creates the device configuration - indirectly using
+the /rfs/base-config service. When this template is evaluated the context node
+is set to the instance of the cpe service: /nodes/cpe{foo}. The $DEVICE_NAME
+variable was set when the nano-service plan was synthesized by NSO. -->
+  <rfs xmlns="http://example.com/cpe-example">
+    <base-config>
+      <device>{$DEVICE_NAME}</device>
+      <hostname>{/base-config/hostname}</hostname>
+    </base-config>
+  </rfs>
+  <kickers xmlns="http://tail-f.com/ns/kicker">
+    <data-kicker>
+      <id>cpe-node-{/name}-re-deploy-trigger</id>
+      <monitor>/ncs:devices/devaut:automaton[devaut:device='{$DEVICE_NAME}']/re-deploy-trigger</monitor>
+      <trigger-expr>. = 'true' and ../device-ready = 'true'</trigger-expr>
+      <kick-node>/ce:nodes/ce:cpe[ce:name='{/name}']</kick-node>
+      <!-- Note the intentional use of the 're-deploy' action here. It is common
+to use 'reactive-re-deploy' in combination with (nano-)services due to its
+asynchronous nature and the fact that requests are queued up. Unfortunately
+'reactive-re-deploy' implies a shallow re-deploy. When services are stacked (one
+top-level service creates other services which in turn create device
+configuration) a shallow re-deploy only triggers the mapping logic of the top
+service. If no inputs to the lower layer services are changed the mapping logic
+for those does not run. This is normally a good optimization because it reduces
+the time needed to run create callbacks. However it does not work as expected if
+the device configuration changes. Because device configuration is *not* part of
+the service inputs, a shallow re-deploy detects no changes. There is currently
+no 'reactive-re-deploy-deep' action in NSO. -->
+      <action-name>re-deploy</action-name>
+    </data-kicker>
+  </kickers>
+</config-template>
