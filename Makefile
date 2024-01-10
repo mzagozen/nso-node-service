@@ -10,17 +10,10 @@ NED?=cisco-ios-cli-3.8
 magic:
 	$(MAKE) clean
 	$(MAKE) setup-nso
-	$(MAKE) code-exchange-scrypt
 	$(MAKE) install
 	$(MAKE) start-nso
 	$(MAKE) setup-netsim
 	$(MAKE) start-netsim
-
-code-exchange-scrypt:
-# Install the local scrypt wheel file if we are running on a devnetcloud.com machine
-ifeq ($(findstring devnetcloud.com,$(DEVENV_DOMAIN)),devnetcloud.com)
-	pip3 install ./scrypt-0.8.20-cp311-cp311-linux_x86_64.whl
-endif
 
 install: $(addprefix install-,$(DEPS))
 # 'compose' is a special recipe used in the automaton package for template pre-processing

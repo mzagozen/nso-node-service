@@ -1,11 +1,5 @@
 # Creating truly declarative services with NSO
 
-## TODO before publishing
-
-- [ ] Install prerequisites in devpod container image
-  - [ ] xmlstarlet (device-automaton pre-processing)
-  - [ ] openssl-devel (build scrypt wheel for Python 3.11)
-
 ### Ideas for extending the lab
 
 Depending on the "time" available, we could extend this lab further, or create
