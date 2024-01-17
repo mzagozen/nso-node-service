@@ -1,0 +1,36 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Node Service",
+  "steps": [
+    {
+      "file": "README.md",
+      "description": "Create new NSO local running directory\n\n>> ncs-setup --dest nso-run",
+      "line": 101,
+      "title": "Create NSO running directory"
+    },
+    {
+      "file": "README.md",
+      "description": "Copy the NED\n\n>> cp -pr $NCS_DIR/packages/neds/cisco-ios-cli-3.8 nso-run/packages/",
+      "line": 131,
+      "title": "Copy the NED"
+    },
+    {
+      "file": "README.md",
+      "description": "Install the `device-automaton` dependencies\n\n>> make install",
+      "line": 140,
+      "title": "Install dependencies"
+    },
+    {
+      "file": "README.md",
+      "description": "Create a new service package\n\n>> ncs-make-package --service-skeleton python --dest nso-run/packages/cpe-example cpe-example\n",
+      "line": 181,
+      "title": "Create node service package"
+    },
+    {
+      "file": "nso-run/packages/cpe-example/src/yang/cpe-example.yang",
+      "description": "Replace the prefix\n\n```yang\n  prefix ce;\n```",
+      "line": 4,
+      "title": "Replace the prefix"
+    }
+  ]
+}
