@@ -98,7 +98,7 @@ shell is already set up to include binaries in the `$NCS_DIR/bin` directory.
 Start by creating a new NSO running directory in `~/nso-run`:
 
 ```shell
-ncs-setup --dest ~/nso-run
+ncs-setup --dest nso-run
 ```
 
 Output:
@@ -182,7 +182,7 @@ ncs-make-package --service-skeleton python --dest nso-run/packages/cpe-example c
 ```
 
 First you will change the default YANG module prefix from `cpe-example` to `ce`,
-to keep the expressions used throughtout the rest of the package shorter. Open
+to keep the expressions used throughout the rest of the package shorter. Open
 the `nso-run/packages/cpe-example/src/yang/cpe-example.yang` file and change the
 `prefix cpe-example;` statement to `prefix ce;`:
 
